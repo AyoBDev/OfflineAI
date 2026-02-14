@@ -2,7 +2,12 @@ import { CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { APP_NAME } from '@/lib/constants'
 
-export function ReadyStep({ onFinish }: { onFinish: () => void }) {
+interface ReadyStepProps {
+  onFinish: () => void
+  isMobile?: boolean
+}
+
+export function ReadyStep({ onFinish, isMobile }: ReadyStepProps) {
   return (
     <div className="flex flex-col items-center gap-6 text-center">
       <div className="rounded-full bg-green-100 p-6">
@@ -10,13 +15,14 @@ export function ReadyStep({ onFinish }: { onFinish: () => void }) {
       </div>
       <div className="space-y-2">
         <h2 className="text-2xl font-bold">You're All Set!</h2>
-        <p className="text-muted-foreground max-w-md">
-          {APP_NAME} is ready to help you study. The AI model is loaded and
-          everything works offline.
+        <p className="text-muted-foreground max-w-md text-sm sm:text-base">
+          {isMobile
+            ? `${APP_NAME} is ready. You can use notes and documents on mobile. For AI chat, open the app on a desktop browser.`
+            : `${APP_NAME} is ready to help you study. The AI model is loaded and everything works offline.`}
         </p>
       </div>
       <Button size="lg" onClick={onFinish}>
-        Start Learning
+        {isMobile ? 'Explore App' : 'Start Learning'}
       </Button>
     </div>
   )

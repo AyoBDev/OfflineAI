@@ -5,7 +5,6 @@ import { WorkspacePage } from '@/pages/WorkspacePage'
 import { SettingsPage } from '@/pages/SettingsPage'
 import { OnboardingPage } from '@/pages/OnboardingPage'
 import { useOnboarding } from '@/hooks/useOnboarding'
-import { WebGPUCheck } from '@/components/common/WebGPUCheck'
 
 function AppRoutes() {
   const { isComplete } = useOnboarding()
@@ -31,10 +30,8 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <WebGPUCheck>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-    </WebGPUCheck>
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
   )
 }

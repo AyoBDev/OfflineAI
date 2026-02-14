@@ -7,9 +7,10 @@ import { StreamingIndicator } from './StreamingIndicator'
 import { DocumentAttachment } from './DocumentAttachment'
 import { useChat } from '@/hooks/useChat'
 import { useWebLLM } from '@/hooks/useWebLLM'
+import { canRunLocalLLM } from '@/lib/webllm'
 import { extractTextFromFile } from '@/lib/documents'
 import { saveDocument } from '@/lib/db'
-import { MessageSquare, Loader2 } from 'lucide-react'
+import { MessageSquare, Loader2, Monitor } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 
@@ -26,6 +27,7 @@ export function ChatContainer() {
   } = useChat(conversationId)
   const { status, progress, loadModel } = useWebLLM()
   const scrollRef = useRef<HTMLDivElement>(null)
+  const supportsLLM = canRunLocalLLM()
 
   useEffect(() => {
     if (conversationId) {
@@ -62,7 +64,7 @@ export function ChatContainer() {
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center gap-2 border-b px-4 py-3">
+      <div className="flex items-center gap-2 border-b px-4 py-3 pl-14 md:pl-4">
         <h2 className="text-sm font-medium">
           {messages.length > 0 ? 'Chat' : 'New Chat'}
         </h2>
@@ -74,8 +76,21 @@ export function ChatContainer() {
       {/* Messages */}
       <ScrollArea ref={scrollRef} className="flex-1 p-4">
         {messages.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center gap-4 text-muted-foreground">
-            {isModelReady ? (
+          <div className="flex h-full flex-col items-center justify-center gap-4 px-4 text-center text-muted-foreground">
+            {!supportsLLM ? (
+              <>
+                <Monitor className="h-12 w-12 opacity-20" />
+                <p className="text-sm font-medium">AI chat requires a desktop browser</p>
+                <p className="text-xs max-w-xs">
+                  Local AI inference needs WebGPU, which isn't available on mobile
+                  devices yet. Open this app on a desktop browser (Chrome 113+ or Edge 113+)
+                  to use AI chat.
+                </p>
+                <p className="text-xs">
+                  You can still use Notes and Documents from the sidebar.
+                </p>
+              </>
+            ) : isModelReady ? (
               <>
                 <MessageSquare className="h-12 w-12 opacity-20" />
                 <p className="text-sm">Send a message to start chatting</p>
@@ -86,7 +101,7 @@ export function ChatContainer() {
                 <p className="text-sm font-medium">Loading AI model...</p>
                 <div className="w-64 space-y-1">
                   <Progress value={Math.round(progress.progress * 100)} className="h-2" />
-                  <p className="text-xs text-center">{progress.text || 'Initializing...'}</p>
+                  <p className="text-xs">{progress.text || 'Initializing...'}</p>
                 </div>
               </>
             ) : status === 'error' ? (
@@ -120,11 +135,11 @@ export function ChatContainer() {
       </ScrollArea>
 
       {/* Input */}
-      <div className="border-t p-4">
+      <div className="border-t p-3 sm:p-4">
         <ChatInput
           onSend={sendMessage}
           onFileUpload={handleFileUpload}
-          disabled={!isModelReady || isStreaming}
+          disabled={!isModelReady || isStreaming || !supportsLLM}
         />
       </div>
     </div>

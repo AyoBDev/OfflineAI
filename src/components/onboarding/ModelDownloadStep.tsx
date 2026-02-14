@@ -35,7 +35,7 @@ export function ModelDownloadStep({ onNext }: { onNext: () => void }) {
       <div className="space-y-2">
         <h2 className="text-2xl font-bold">Downloading AI Model</h2>
         <p className="text-muted-foreground text-sm">
-          This is a one-time download (~2-4 GB). The model will be cached
+          This is a one-time download (~800 MB). The model will be cached
           locally for offline use.
         </p>
       </div>

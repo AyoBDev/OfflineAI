@@ -36,3 +36,17 @@ export function loadModel(
 export function isWebGPUSupported(): boolean {
   return 'gpu' in navigator
 }
+
+export function isMobileDevice(): boolean {
+  return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
+    navigator.userAgent
+  )
+}
+
+/**
+ * Check if this device can realistically run local LLM inference.
+ * WebGPU on mobile is either unsupported or too memory-constrained.
+ */
+export function canRunLocalLLM(): boolean {
+  return isWebGPUSupported() && !isMobileDevice()
+}

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet'
 import { useWebLLM } from '@/hooks/useWebLLM'
 import { OfflineIndicator } from '@/components/common/OfflineIndicator'
+import { WebGPUCheck } from '@/components/common/WebGPUCheck'
 
 export function AppShell() {
   const navigate = useNavigate()
@@ -18,7 +19,7 @@ export function AppShell() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-dvh overflow-hidden">
       {/* Desktop sidebar */}
       <div className="hidden md:block">
         <Sidebar modelStatus={status} onNewChat={handleNewChat} />
@@ -43,7 +44,9 @@ export function AppShell() {
 
       {/* Main content */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        <OfflineIndicator />
+        <WebGPUCheck>
+          <OfflineIndicator />
+        </WebGPUCheck>
         <main className="flex-1 overflow-hidden">
           <Outlet />
         </main>
